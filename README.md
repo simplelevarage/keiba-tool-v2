@@ -2,76 +2,200 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>競馬ツール v2</title>
+<title>競馬期待値ツール v3（完全UI版）</title>
 </head>
 
-<body style="font-family:sans-serif;padding:20px;max-width:700px;margin:auto;">
+<body style="font-family:sans-serif;max-width:800px;margin:auto;padding:20px;">
 
-<h2>競馬期待値ツール v2（STEP1）</h2>
+<h2>競馬期待値ツール v3（完全UIベース）</h2>
 
-<label>人気</label><br>
+<hr>
+
+<h3>基本情報</h3>
+
+<label>単勝人気</label><br>
 <select id="rank" style="width:100%;padding:10px;">
-  <option value="">--選択--</option>
-  <option value="1">1人気</option>
-  <option value="5">5人気</option>
-  <option value="8">8人気</option>
+<option value="">--選択--</option>
+<script>
+for(let i=1;i<=18;i++){
+document.write(`<option value="${i}">${i}人気</option>`);
+}
+</script>
 </select>
 
 <br><br>
 
 <label>脚質</label><br>
 <select id="style" style="width:100%;padding:10px;">
-  <option value="">--選択--</option>
-  <option value="逃げ">逃げ</option>
-  <option value="先行">先行</option>
-  <option value="差し">差し</option>
+<option value="">--選択--</option>
+<option value="逃げ">逃げ</option>
+<option value="先行">先行</option>
+<option value="差し">差し</option>
+<option value="追込">追込</option>
 </select>
 
 <br><br>
 
 <label>騎手</label><br>
 <select id="jockey" style="width:100%;padding:10px;">
-  <option value="">--選択--</option>
-  <option value="take">武豊</option>
-  <option value="iwata">岩田康</option>
-  <option value="other">その他</option>
+<option value="">--選択--</option>
+<option value="take">武豊</option>
+<option value="lemaire">ルメール</option>
+<option value="kawada">川田</option>
+<option value="sakai">坂井瑠星</option>
+<option value="tokei">戸崎圭太</option>
+<option value="iwata_y">岩田康誠</option>
+<option value="iwata_mi">岩田望来</option>
+<option value="sugawara">菅原明良</option>
+<option value="moreira">モレイラ</option>
+<option value="other">その他</option>
 </select>
 
 <br><br>
 
-<button id="btn" style="width:100%;padding:15px;font-size:18px;">
-判定
+<label>距離</label><br>
+<select id="dist" style="width:100%;padding:10px;">
+<option value="">--選択--</option>
+<option value="short">短距離（1000〜1500）</option>
+<option value="mid">中距離（1600〜2200）</option>
+<option value="long">長距離（2400以上）</option>
+</select>
+
+<br><br>
+
+<label>馬場</label><br>
+<select id="surface" style="width:100%;padding:10px;">
+<option value="">--選択--</option>
+<option value="芝">芝</option>
+<option value="ダート">ダート</option>
+</select>
+
+<br><br>
+
+<label>クラス</label><br>
+<select id="race_class" style="width:100%;padding:10px;">
+<option value="">--選択--</option>
+<option value="平場">平場</option>
+<option value="OP">OP</option>
+<option value="G23">G2・G3</option>
+<option value="G1">G1</option>
+</select>
+
+<hr>
+
+<h3>前走情報</h3>
+
+<label>前走人気</label><br>
+<select id="prev_rank" style="width:100%;padding:10px;">
+<option value="">--選択--</option>
+<script>
+for(let i=1;i<=18;i++){
+document.write(`<option value="${i}">${i}人気</option>`);
+}
+</script>
+</select>
+
+<br><br>
+
+<label>前走着順</label><br>
+<select id="prev_order" style="width:100%;padding:10px;">
+<option value="">--選択--</option>
+<script>
+for(let i=1;i<=18;i++){
+if(i<=10){
+document.write(`<option value="${i}">${i}着</option>`);
+}
+}
+document.write(`<option value="10">10着以上</option>`);
+</script>
+</select>
+
+<br><br>
+
+<label>前走着差</label><br>
+<select id="prev_diff" style="width:100%;padding:10px;">
+<option value="">--選択--</option>
+<option value="0.1">僅差（〜0.1）</option>
+<option value="0.5">0.2〜0.5差</option>
+<option value="1.0">1秒以上負け</option>
+</select>
+
+<hr>
+
+<h3>オッズ</h3>
+
+<label>単勝オッズ</label><br>
+<input id="win_odds" type="number" style="width:100%;padding:10px;">
+
+<br><br>
+
+<label>複勝オッズ</label><br>
+<input id="pl_odds" type="number" style="width:100%;padding:10px;">
+
+<br><br>
+
+<button id="btn" style="width:100%;padding:15px;font-size:20px;">
+判定する
 </button>
 
 <hr>
 
-<div id="result" style="font-size:30px;font-weight:bold;text-align:center;margin-top:20px;"></div>
+<div id="result" style="font-size:28px;font-weight:bold;text-align:center;margin-top:20px;"></div>
 
 <script>
 
+// =========================
+// STEP1（最低ロジック）
+// =========================
+
 document.getElementById("btn").onclick = function(){
 
-    var r = document.getElementById("rank").value;
-    var s = document.getElementById("style").value;
-    var j = document.getElementById("jockey").value;
+let score = 100;
 
-    var score = 100;
+let r = document.getElementById("rank").value;
+let s = document.getElementById("style").value;
+let j = document.getElementById("jockey").value;
 
-    if(r == "5") score += 100;
-    if(s == "逃げ") score += 30;
-    if(j == "take") score += 50;
+let pr = document.getElementById("prev_rank").value;
+let po = document.getElementById("prev_order").value;
+let pd = document.getElementById("prev_diff").value;
 
-    var text = "";
+let w = document.getElementById("win_odds").value;
+let p = document.getElementById("pl_odds").value;
 
-    if(score >= 220){
-        text = "🔥 激アツ期待値馬";
-    }else if(score >= 180){
-        text = "◎ 高期待値馬";
-    }else{
-        text = "✕ 見送り";
-    }
+// 人気
+if(r == "5") score += 20;
 
-    document.getElementById("result").innerHTML = text;
+// 脚質
+if(s == "逃げ") score += 10;
+
+// 騎手（仮）
+if(j == "take") score += 20;
+if(j == "lemaire") score += 15;
+if(j == "sakai") score += 10;
+
+// 前走
+if(pr == "1") score += 10;
+if(po == "1") score += 30;
+if(pd == "0.1") score += 20;
+
+// オッズ（仮）
+if(w && w > 10) score += 10;
+
+let text = "";
+
+if(score >= 220){
+text = "🔥 激アツ期待値馬";
+}else if(score >= 180){
+text = "◎ 高期待値馬";
+}else if(score >= 150){
+text = "○ 相手候補";
+}else{
+text = "✕ 見送り";
+}
+
+document.getElementById("result").innerHTML = text;
+
 };
 
 </script>
