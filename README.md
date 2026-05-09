@@ -39,16 +39,24 @@ document.write(`<option value="${i}">${i}人気</option>`);
 <label>騎手</label><br>
 <select id="jockey" style="width:100%;padding:10px;">
 <option value="">--選択--</option>
-<option value="take">武豊</option>
-<option value="lemaire">ルメール</option>
-<option value="kawada">川田</option>
+
 <option value="sakai">坂井瑠星</option>
 <option value="tokei">戸崎圭太</option>
+<option value="lemaire">ルメール</option>
+<option value="kawada">川田将雅</option>
+<option value="take">武豊</option>
+
+<option value="sugawara">菅原明良</option>
 <option value="iwata_y">岩田康誠</option>
 <option value="iwata_mi">岩田望来</option>
-<option value="sugawara">菅原明良</option>
+
 <option value="moreira">モレイラ</option>
-<option value="other">その他</option>
+<option value="matsuyama">松山弘平</option>
+<option value="yokoyama_t">横山武史</option>
+
+<option value="demuro">デムーロ</option>
+<option value="yutaka_other">その他</option>
+
 </select>
 
 <br><br>
@@ -169,15 +177,83 @@ if(r == "5") score += 20;
 // 脚質
 if(s == "逃げ") score += 10;
 
-// 騎手（仮）
-if(j == "take") score += 20;
-if(j == "lemaire") score += 15;
-if(j == "sakai") score += 10;
+ // =========================
+ // 騎手補正（フル版）
+ // =========================
 
-// 前走
-if(pr == "1") score += 10;
-if(po == "1") score += 30;
-if(pd == "0.1") score += 20;
+ if(j == "lemaire"){
+     score += 18;
+     if(r <= 5) score += 10;
+     if(r >= 6) score -= 5;
+ }
+
+ else if(j == "kawada"){
+     score += 15;
+     if(s == "先行") score += 10;
+ }
+
+ else if(j == "take"){
+     score += 12;
+     if(s == "逃げ") score += 12;
+     if(document.getElementById("dist").value == "long") score += 10;
+ }
+
+ else if(j == "sakai"){
+     score += 10;
+     if(r >= 4 && r <= 8) score += 8;
+ }
+
+ else if(j == "tokei"){
+     score += 10;
+     if(s == "差し") score += 8;
+ }
+
+ else if(j == "sugawara"){
+     score += 8;
+     if(s == "差し" || s == "追込") score += 10;
+ }
+
+ else if(j == "iwata_y"){
+     score += 10;
+     if(r <= 5) score += 8;
+ }
+
+ else if(j == "iwata_mi"){
+     score += 8;
+     if(r >= 6) score += 10;
+ }
+
+ else if(j == "moreira"){
+     score += 20;
+ }
+
+ else if(j == "matsuyama"){
+     score += 9;
+ }
+
+ else if(j == "yokoyama_t"){
+     score += 11;
+     if(s == "先行") score += 6;
+ }
+
+ else if(j == "demuro"){
+     score += 9;
+ }
+
+ // =========================
+ // 前走ロジック（完全版）
+ // =========================
+
+ let prevScore = 0;
+
+ // 前走人気（能力評価）
+ if(pr == "1"){
+     prevScore += 12;
+ } else if(pr == "2"){
+     prevScore += 9;
+ } else if(pr == "3"){
+     prevScore += 6;
+ } else if(pr >= "4
 
 // オッズ（仮）
 if(w && w > 10) score += 10;
